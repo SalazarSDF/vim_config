@@ -13,6 +13,7 @@ Plug 'vim-airline/vim-airline' "Бар внизу
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary' "gc закоментировать
+Plug 'mihaifm/bufstop' "буфер нвигация
 "js +ts plugins
 "Plug 'HerringtonDarkholme/yats.vim' "Подсветка для TS
 Plug 'sheerun/vim-polyglot' "Подсветка для всех языков!!
@@ -21,6 +22,11 @@ Plug 'sheerun/vim-polyglot' "Подсветка для всех языков!!
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "Plug 'dense-analysis/ale' "вместо coc.nvim
+
+" fzf
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 call plug#end()
 
 set number
@@ -59,18 +65,29 @@ set background=dark
 set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set fillchars+=vert:│
+hi VertSplit ctermbg=NONE guibg=NONE
 
 " Restore last position////////////////////////////////////////////////////////////////
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 "mappings////////////////////////////////////////////////////////////////
+"nerdtree NERDTree
 map <C-n> :NERDTreeToggle<CR>
 map <F6> :UndotreeToggle<CR>
+let NERDTreeShowHidden=1
+
 "mapings for buffer 1. закрыть текущий буфер(типо закрыть)
+"qa закрыть все буферы кроме текущего
+nmap <leader>qa :bufdo bd<cr> 
 nmap <leader>qq :bd<cr>
 nmap <leader>l :bnext<cr>
 nmap <leader>h :bp<cr>
 
+"buffer toggle
+map <leader>b :Bufstop<CR>
+let g:BufstopAutoSpeedToggle = 1
+"map <leader>b :ls<CR>:b " показывает реальные бафферы
 " Window navigation////////////////////////////////////////////////////////////////
 nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
@@ -78,6 +95,30 @@ nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
 
 " Airline////////////////////////////////////////////////////////////////
+" для красоты
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.maxlinenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
+
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#hunks#coc_git = 1
@@ -143,7 +184,11 @@ omap ac <Plug>(coc-classobj-a)
 command! -nargs=0 Format :call CocActionAsync('format')
 nmap  <leader>f :Format<cr>
 " это что gd работало
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-git', 'coc-css', 'coc-html']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html']
 
 "coc-eslint
 ":CocCommand eslint.executeAutofix
+
+" Fzf fzf maps
+map <Leader>mf :Files<CR>
+map <Leader>ma :Rg<CR>
