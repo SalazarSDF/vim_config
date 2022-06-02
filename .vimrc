@@ -14,6 +14,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary' "gc закоментировать
 Plug 'mihaifm/bufstop' "буфер нвигация
+Plug 'tpope/vim-surround' "Обернуть в теги
+Plug 'tpope/vim-repeat' " Репит для оборота в теги
+Plug 'mattn/emmet-vim' " Html снипет
 "js +ts plugins
 "Plug 'HerringtonDarkholme/yats.vim' "Подсветка для TS
 Plug 'sheerun/vim-polyglot' "Подсветка для всех языков!!
@@ -26,7 +29,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-
 call plug#end()
 
 set number
@@ -73,8 +75,10 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 
 "mappings////////////////////////////////////////////////////////////////
 "nerdtree NERDTree
-map <C-n> :NERDTreeToggle<CR>
-map <F6> :UndotreeToggle<CR>
+"map <C-n> :NERDTreeToggle<CR>
+"map <F6> :UndotreeToggle<CR>
+nnoremap <leader>nn :NERDTreeToggle<CR>
+nnoremap <leader>nf :NERDTreeFind<CR>
 let NERDTreeShowHidden=1
 
 "mapings for buffer 1. закрыть текущий буфер(типо закрыть)
@@ -180,8 +184,9 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocActionAsync('format')
+" Add `:Format` command to format current buffer with pretter.
+"command! -nargs=0 Format :call CocActionAsync('format')
+command! -nargs=0 Format :call CocAction('runCommand', 'prettier.formatFile')
 nmap  <leader>f :Format<cr>
 " это что gd работало
 let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html']
@@ -192,3 +197,5 @@ let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html'
 " Fzf fzf maps
 map <Leader>mf :Files<CR>
 map <Leader>ma :Rg<CR>
+let $FZF_DEFAULT_COMMAND = 'rg --files --follow'
+
