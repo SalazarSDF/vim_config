@@ -131,22 +131,40 @@ let g:airline#extensions#hunks#coc_git = 1
 let g:airline_theme = 'pop_punk'
 let g:airline_section_z = airline#section#create('%3p%% %#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__# %3v') " эта штука нормализует нижний бар
 "vim-coc////////////////////////////////////////////////////////////////
-let g:coc_disable_startup_warning = 1
 
 "vim-coc tab autocomplite
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ CheckBackspace() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"
+"Use <tab> and <S-tab> to navigate completion list: >
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+  endfunction
+  " Insert <tab> when previous text is space, refresh completion if not.
+  inoremap <silent><expr> <TAB>
+	\ coc#pum#visible() ? coc#pum#next(1):
+	\ <SID>check_back_space() ? "\<Tab>" :
+	\ coc#refresh()
+  inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+
+"To make <CR> to confirm selection of selected complete item or notify coc.nvim
+"to format on enter, use: 
+
+"поддтвердть выбор на enter
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#_select_confirm()
+				\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 "vim-coc Выбрать форматер
 "nmap <leader> ca <Plug>(coc-codeaction)
@@ -172,6 +190,17 @@ nmap <leader>rn <Plug>(coc-rename)
 " All extencions
 nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
 
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 "
@@ -192,6 +221,7 @@ omap ac <Plug>(coc-classobj-a)
 " Add `:Format` command to format current buffer with pretter.
 "command! -nargs=0 Format :call CocActionAsync('format')
 command! -nargs=0 Format :call CocAction('runCommand', 'prettier.formatFile')
+nmap <leader>qf  <Plug>(coc-fix-current)
 nmap  <leader>f :Format<cr>
 " это что gd работало
 let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html']
@@ -204,3 +234,5 @@ map <Leader>mf :Files<CR>
 map <Leader>ma :Rg<CR>
 let $FZF_DEFAULT_COMMAND = 'rg --files --follow'
 
+" emmet Emmet html compliter
+let g:user_emmet_leader_key='<C-Z>'
