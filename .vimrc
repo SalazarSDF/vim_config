@@ -1,11 +1,11 @@
 "Plugins////////////////////////////////////////////////////////////////
 set nocompatible "Что то там с Vi связанное
-let g:polyglot_disabled = ['markdown'] "Polyglot default
+"let g:polyglot_disabled = ['markdown'] "Polyglot default
 call plug#begin('~/.vim/plugged')
 
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' } "Дерево проекта
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " Nice tree
-Plug 'ryanoasis/vim-devicons' " icons 
+Plug 'ryanoasis/vim-devicons' " icons
 Plug 'airblade/vim-gitgutter' "Что-то про гит
 Plug 'bignimbus/pop-punk.vim' "colorschemes
 Plug 'mbbill/undotree' " Буфер изменений на f5
@@ -29,6 +29,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+
+"test debuger
+"Plug 'puremourning/vimspector'
+
 call plug#end()
 
 set number
@@ -46,6 +50,8 @@ set showcmd " показывет "
 set backspace=eol,start,indent "Типо нормализует backspace(?)
 set whichwrap+=<,>,h,l " хз что это, что то со строками(?)
 set signcolumn=yes
+set backupcopy=yes " это для parcel
+"set relativenumber " Type set relativenumber (or set rnu), then press Enter.
 
 "Coc-depend////////////////////////////////////////////////////////////////
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
@@ -85,7 +91,7 @@ let NERDTreeShowHidden=1
 
 "mapings for buffer 1. закрыть текущий буфер(типо закрыть)
 "qa закрыть все буферы кроме текущего
-nmap <leader>qa :bufdo bd<cr> 
+nmap <leader>qa :bufdo bd<cr>
 nmap <leader>qq :bd<cr>
 nmap <leader>l :bnext<cr>
 nmap <leader>h :bp<cr>
@@ -160,7 +166,7 @@ endif
 " format on enter, <cr> could be remapped by other vim plugin
 
 "To make <CR> to confirm selection of selected complete item or notify coc.nvim
-"to format on enter, use: 
+"to format on enter, use:
 
 "поддтвердть выбор на enter
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#_select_confirm()
@@ -224,7 +230,7 @@ command! -nargs=0 Format :call CocAction('runCommand', 'prettier.formatFile')
 nmap <leader>qf  <Plug>(coc-fix-current)
 nmap  <leader>f :Format<cr>
 " это что gd работало
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-emmet', 'coc-eslint','coc-prettier' ,'coc-html-css-support']
 
 "coc-eslint
 ":CocCommand eslint.executeAutofix
@@ -232,7 +238,32 @@ let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html'
 " Fzf fzf maps
 map <Leader>mf :Files<CR>
 map <Leader>ma :Rg<CR>
-let $FZF_DEFAULT_COMMAND = 'rg --files --follow'
+"let $FZF_DEFAULT_COMMAND = 'rg --files --follow'
+"let g:fzf_preview_window = ['right:10%', 'ctrl-/']
+"let g:fzf_preview_window = ['right:90%', 'ctrl-/']
+let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
+let $FZF_DEFAULT_COMMAND="rg --smart-case --files --hidden --glob '!**/{.git,node_modules,.idea,.vscode,.history}/**'"
+let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.95, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 
+" vim spector (debug tool)
+" nnoremap <Leader>dd :call vimspector#Launch()<CR>
+" nnoremap <Leader>de :call vimspector#Reset()<CR>
+" nnoremap <Leader>dc :call vimspector#Continue()<CR>
+
+" nnoremap <Leader>dt :call vimspector#ToggleBreakpoint()<CR>
+" nnoremap <Leader>dT :call vimspector#ClearBreakpoints()<CR>
+
+" nmap <Leader>dk <Plug>VimspectorRestart
+" nmap <Leader>dh <Plug>VimspectorStepOut
+" nmap <Leader>dl <Plug>VimspectorStepInto
+" nmap <Leader>dj <Plug>VimspectorStepOver
+
+
+"
+"
+"
+"
+"
+"
 " emmet Emmet html compliter
 let g:user_emmet_leader_key='<C-Z>'
